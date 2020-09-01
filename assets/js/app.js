@@ -71,7 +71,7 @@ function setup(){
     }
 
     start = grid[0][0];
-    end = grid[cols-1][rows-1];
+    end = grid[cols-1][1];
 
     openSet.push(start);
 
@@ -100,6 +100,7 @@ function draw(){
                 path.push(temp.previous);
                 temp = temp.previous;
             }
+            noLoop();
         }
 
         removeFromArray(openSet, current);

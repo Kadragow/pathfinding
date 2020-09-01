@@ -1,5 +1,5 @@
-let cols = 15;
-let rows = 15;
+let cols = 50;
+let rows = 50;
 let grid = new Array(cols);
 
 let openSet = [];
@@ -18,10 +18,19 @@ class Spot {
         this.h = 0;
         this.neighbors = [];
         this.previous = undefined;
+        this.is_obstacle = false;
+        if(random(1)<0.3){
+            this.is_obstacle = true;
+        }
     }
+
+    
 
     show = function(color){
         fill(color);
+        if(this.is_obstacle){
+            fill(0);
+        }
         noStroke();
         rect(this.x * w,this.y * h, w-1, h-1);
     }
@@ -48,7 +57,7 @@ function heuristic(p1, p2){
 }
 
 function setup(){
-    createCanvas(400,400);
+    createCanvas(800,800);
 
     w = width/cols;
     h = height/rows;
@@ -70,8 +79,11 @@ function setup(){
         }
     }
 
-    start = grid[0][0];
-    end = grid[cols-1][1];
+    start = grid[10][10];
+    end = grid[cols-1][rows-1];
+
+    start.is_obstacle = false;
+    end.is_obstacle = false;
 
     openSet.push(start);
 
@@ -110,7 +122,7 @@ function draw(){
         for(let i = 0; i<nbs.length; i++){
             let nb = nbs[i];
             
-            if(!closedSet.includes(nb)){
+            if(!closedSet.includes(nb) && !nb.is_obstacle){
                 let tmp = current.g+1;
                 if(openSet.includes(nb)){
                     if(tmp < nb.g){
@@ -127,7 +139,8 @@ function draw(){
         }
 
     }else{
-
+        console.log("There is no possible solution!")
+        noLoop();
     }
 
 

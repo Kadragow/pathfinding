@@ -8,7 +8,7 @@ let start;
 let end;
 let w,h;
 let path = [];
-let startX, startY, colsIn, rowsIn, endX, endY;
+let startX, startY, colsIn, rowsIn, endX, endY, message;
 
 let is_running = false;
 
@@ -48,9 +48,14 @@ class Spot {
 
     addNeighbors = function(){
         if(this.x < cols-1) this.neighbors.push(grid[this.x+1][this.y])
-        if(this.x > 0) this.neighbors.push(grid[this.x-1][this.y])
+        if(this.x > 0)      this.neighbors.push(grid[this.x-1][this.y])
         if(this.y < rows-1) this.neighbors.push(grid[this.x][this.y+1])
-        if(this.y > 0) this.neighbors.push(grid[this.x][this.y-1])
+        if(this.y > 0)      this.neighbors.push(grid[this.x][this.y-1])
+        //diagonal
+        // if(this.x < cols-1 && this.y < rows-1)  this.neighbors.push(grid[this.x+1][this.y+1])
+        // if(this.x > 0 && this.y < rows-1)       this.neighbors.push(grid[this.x-1][this.y+1])
+        // if(this.x < cols-1 && this.y > 0)       this.neighbors.push(grid[this.x+1][this.y-1])
+        // if(this.y > 0 && this.x > 0)            this.neighbors.push(grid[this.x-1][this.y-1])
     }
 }
 
@@ -67,6 +72,32 @@ function heuristic(p1, p2){
     return d;
 }
 
+function validateX() {
+    rows = rowsIn.value();
+    let val = this.value();
+    console.log(val);
+    if(val>(rows-1)){
+        val = rows-1;
+    }else if(val<0){
+        val = 0;
+    }
+
+    this.value(val);
+}
+
+function validateY() {
+    cols = colsIn.value();
+    let val = this.value();
+    console.log(val);
+    if(val>(cols-1)){
+        val = rows-1;
+    }else if(cols<0){
+        val = 0;
+    }
+
+    this.value(val);
+}
+
 function setup(){
 
     createElement("span","Columns: ")
@@ -80,21 +111,27 @@ function setup(){
     createElement("span","Start X: ")
 
     startX = createInput(0);
+    startX.input(validateX);
 
     createElement("span","Y: ")
 
     startY = createInput(0);
+    startY.input(validateY);
 
     createElement("span","End X: ")
 
     endX = createInput(cols-1);
+    endX.input(validateX);
 
     createElement("span","Y: ")
 
     endY = createInput(rows-1);
+    endY.input(validateX);
 
     let but = createButton("reset");
     but.mousePressed(restart);
+
+    message = createElement('h1','');
 
     restart();
 
@@ -150,8 +187,11 @@ function restart(){
 }
 
 function draw(){
+
+    
    
     if(is_running){
+        message.html("Looking for solution...");
         background(0);
 
         if (openSet.length > 0){
@@ -165,7 +205,8 @@ function draw(){
             let current = openSet[low];
 
             if(current == end){
-                console.log("FINISHED");
+                message.html("FINISHED!");
+                // console.log("FINISHED");
 
                 is_running = false;
             }
@@ -206,7 +247,8 @@ function draw(){
             }
 
         }else{
-            console.log("There is no possible solution!")
+            message.html("There is no possible solution!");
+            // console.log("There is no possible solution!")
             is_running = false;
         }
 
